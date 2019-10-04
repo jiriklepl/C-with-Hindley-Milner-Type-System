@@ -423,6 +423,8 @@ idkwtok ('_' : '_' : 'w' : 'r' : 'i' : 't' : 'e' : '_' : 'o' : 'n' : 'l' : 'y' :
 idkwtok ('_' : '_' : 'g' : 'l' : 'o' : 'b' : 'a' : 'l' : []) = tok 8 CTokClGlobal
 idkwtok ('_' : '_' : 'l' : 'o' : 'c' : 'a' : 'l' : []) = tok 7 CTokClLocal
 
+idkwtok ('t' : 'e' : 'm' : 'p' : 'l' : 'a' : 't' : 'e' : []) = tok  8 CHMTemplate
+
 idkwtok cs = \pos -> do
   name <- getNewName
   let len = case length cs of l -> l

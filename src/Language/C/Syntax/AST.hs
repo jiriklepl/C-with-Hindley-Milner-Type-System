@@ -55,7 +55,10 @@ module Language.C.Syntax.AST (
   CConst, CStrLit, cstringOfLit, liftStrLit,
   CConstant(..), CStringLiteral(..),
   -- * Annoated type class
-  Annotated(..)
+  Annotated(..),
+  -- CHM goes here
+  CHMTempFunDef, CHMTemplateFunctionDef(..),
+  CHMConstr, CHMConstraint(..)
 ) where
 import Language.C.Syntax.Constants
 import Language.C.Syntax.Ops
@@ -84,6 +87,7 @@ type CExtDecl = CExternalDeclaration NodeInfo
 data CExternalDeclaration a
   = CDeclExt (CDeclaration a)
   | CFDefExt (CFunctionDef a)
+  | CHMFDefExt (CHMTemplateFunctionDef a) -- CHM addition
   | CAsmExt  (CStringLiteral a) a
     deriving (Show, Data,Typeable, Generic, Generic1 {-! ,CNode ,Functor, Annotated !-})
 
@@ -804,6 +808,28 @@ class (Functor ast) => Annotated ast where
 
 -- fmap2 :: (a->a') -> (a,b) -> (a',b)
 -- fmap2 f (a,b) = (f a, b)
+
+-- CHM goes here
+
+type CHMTempFunDef = CHMTemplateFunctionDef NodeInfo
+data CHMTemplateFunctionDef a
+  = CHMTempFunDef
+    [Ident]                   -- type parameters
+    [CHMConstraint a]         -- optional constraints
+    (CFunctionDef a)          -- function itself
+    a
+    deriving (Show, Data,Typeable, Generic, Generic1 {-! ,CNode ,Functor ,Annotated !-})
+
+instance NFData a => NFData (CHMTemplateFunctionDef a)
+
+type CHMConstr = CHMConstraint NodeInfo
+data CHMConstraint a
+  = CHMConstr
+    Ident                     -- type
+    [[CDeclSpec]]               -- parameters
+    deriving (Show, Data,Typeable, Generic, Generic1 {-! ,CNode ,Functor ,Annotated !-})
+
+instance NFData a => NFData (CHMConstraint a)
 
 -- Instances generated using derive-2.*
 -- GENERATED START

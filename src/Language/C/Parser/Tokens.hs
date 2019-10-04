@@ -146,6 +146,7 @@ data CToken = CTokLParen   !PosLength            -- `('
             | CTokClWrOnly !PosLength            -- OpenCL `__write_only'
             | CTokClGlobal !PosLength            -- OpenCL `__Global'
             | CTokClLocal  !PosLength            -- OpenCL `__Local'
+            | CHMTemplate  !PosLength            -- `template'
             | CTokEof                           -- end of file
 
 -- special tokens used in GNU C extensions to ANSI C
@@ -275,6 +276,7 @@ posLenOfTok (CTokClRdOnly pos  ) = pos
 posLenOfTok (CTokClWrOnly pos  ) = pos
 posLenOfTok (CTokClGlobal pos  ) = pos
 posLenOfTok (CTokClLocal  pos  ) = pos
+posLenOfTok (CHMTemplate  pos  ) = pos
 posLenOfTok CTokEof = error "tokenPos: Eof"
 
 instance Show CToken where
@@ -395,4 +397,5 @@ instance Show CToken where
   showsPrec _ (CTokClWrOnly _  ) = showString "__write_only"
   showsPrec _ (CTokClGlobal _  ) = showString "__global"
   showsPrec _ (CTokClLocal  _  ) = showString "__Local"
+  showsPrec _ (CHMTemplate  _  ) = showString "template"
   showsPrec _ CTokEof = error "show CToken : CTokEof"

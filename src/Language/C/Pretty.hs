@@ -98,6 +98,7 @@ prettyUsingInclude (CTranslUnit edecls _) =
 instance Pretty CExtDecl where
     pretty (CDeclExt decl) = pretty decl <> semi
     pretty (CFDefExt fund) = pretty fund
+    pretty (CHMFDefExt temp) = pretty temp -- CHM addition
     pretty (CAsmExt  asmStmt _) = text "asm" <> parens (pretty asmStmt) <> semi
 
 -- TODO: Check that old-style and new-style aren't mixed
@@ -550,3 +551,22 @@ binPrec CXorOp = 14
 binPrec COrOp  = 13
 binPrec CLndOp = 12
 binPrec CLorOp = 11
+
+-- CHM goes here
+
+chmBrackets :: Doc -> Doc
+chmBrackets expr = text "<" <> expr <> text ">"
+
+instance Pretty CHMTempFunDef where
+    pretty (CHMTempFunDef idents constraints func _) =
+        text "template" <>
+        (chmBrackets . hsep . punctuate comma . map identP) idents <>
+        (if null constraints
+            then mempty
+            else space <> (hsep . punctuate comma . map pretty) constraints) $$
+        pretty func
+
+instance Pretty CHMConstr where
+    pretty (CHMConstr ident specss) =
+        identP ident <>
+        (chmBrackets . hsep . punctuate comma) [pretty x | specs <- specss, x <- specs]
