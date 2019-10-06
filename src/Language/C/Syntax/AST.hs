@@ -57,6 +57,7 @@ module Language.C.Syntax.AST (
   -- * Annoated type class
   Annotated(..),
   -- CHM goes here
+  CHMTempStructDef, CHMTemplateStructureDef(..),
   CHMTempFunDef, CHMTemplateFunctionDef(..),
   CHMConstr, CHMConstraint(..)
 ) where
@@ -87,7 +88,8 @@ type CExtDecl = CExternalDeclaration NodeInfo
 data CExternalDeclaration a
   = CDeclExt (CDeclaration a)
   | CFDefExt (CFunctionDef a)
-  | CHMFDefExt (CHMTemplateFunctionDef a) -- CHM addition
+  | CHMFDefExt (CHMTemplateFunctionDef a)  -- CHM addition
+  | CHMSDefExt (CHMTemplateStructureDef a) -- CHM addition
   | CAsmExt  (CStringLiteral a) a
     deriving (Show, Data,Typeable, Generic, Generic1 {-! ,CNode ,Functor, Annotated !-})
 
@@ -811,6 +813,17 @@ class (Functor ast) => Annotated ast where
 
 -- CHM goes here
 
+type CHMTempStructDef = CHMTemplateStructureDef NodeInfo
+data CHMTemplateStructureDef a
+  = CHMTempStructDef
+    [Ident]                   -- type parameters
+    [CHMConstraint a]         -- optional constraints
+    (CStructureUnion a)       -- structure itself
+    a
+    deriving (Show, Data,Typeable, Generic, Generic1 {-! ,CNode ,Functor ,Annotated !-})
+
+instance NFData a => NFData (CHMTemplateStructureDef a)
+
 type CHMTempFunDef = CHMTemplateFunctionDef NodeInfo
 data CHMTemplateFunctionDef a
   = CHMTempFunDef
@@ -826,7 +839,8 @@ type CHMConstr = CHMConstraint NodeInfo
 data CHMConstraint a
   = CHMConstr
     Ident                     -- type
-    [[CDeclSpec]]               -- parameters
+    [[CDeclSpec]]             -- parameters
+    a
     deriving (Show, Data,Typeable, Generic, Generic1 {-! ,CNode ,Functor ,Annotated !-})
 
 instance NFData a => NFData (CHMConstraint a)
@@ -850,6 +864,8 @@ instance Annotated CTranslationUnit where
 instance CNode t1 => CNode (CExternalDeclaration t1) where
         nodeInfo (CDeclExt d) = nodeInfo d
         nodeInfo (CFDefExt d) = nodeInfo d
+        nodeInfo (CHMFDefExt d) = nodeInfo d
+        nodeInfo (CHMSDefExt d) = nodeInfo d
         nodeInfo (CAsmExt _ n) = nodeInfo n
 instance CNode t1 => Pos (CExternalDeclaration t1) where
         posOf x = posOf (nodeInfo x)
@@ -857,11 +873,15 @@ instance CNode t1 => Pos (CExternalDeclaration t1) where
 instance Functor CExternalDeclaration where
         fmap _f (CDeclExt a1) = CDeclExt (fmap _f a1)
         fmap _f (CFDefExt a1) = CFDefExt (fmap _f a1)
+        fmap _f (CHMFDefExt a1) = CHMFDefExt (fmap _f a1)
+        fmap _f (CHMSDefExt a1) = CHMSDefExt (fmap _f a1)
         fmap _f (CAsmExt a1 a2) = CAsmExt (fmap _f a1) (_f a2)
 
 instance Annotated CExternalDeclaration where
         annotation (CDeclExt n) = annotation n
         annotation (CFDefExt n) = annotation n
+        annotation (CHMFDefExt n) = annotation n
+        annotation (CHMSDefExt n) = annotation n
         annotation (CAsmExt _ n) = n
         amap f (CDeclExt n) = CDeclExt (amap f n)
         amap f (CFDefExt n) = CFDefExt (amap f n)
@@ -1483,3 +1503,51 @@ instance Annotated CStringLiteral where
         annotation (CStrLit _ n) = n
         amap f (CStrLit a_1 a_2) = CStrLit a_1 (f a_2)
 -- GENERATED STOP
+
+-- CHM goes here
+
+
+-- Structures start from here:
+
+instance Annotated CHMTemplateStructureDef where
+        annotation (CHMTempStructDef _ _ _ n) = n
+        amap f (CHMTempStructDef a1 a2 a3 a4) = CHMTempStructDef a1 a2 a3 (f a4)
+
+instance Functor CHMTemplateStructureDef where
+        fmap f (CHMTempStructDef a1 a2 a3 a4) = CHMTempStructDef a1 (map (fmap f) a2) (fmap f a3) (f a4)
+
+instance CNode t1 => CNode (CHMTemplateStructureDef t1) where
+        nodeInfo (CHMTempStructDef _ _ _ n) = nodeInfo n
+
+instance CNode t1 => Pos (CHMTemplateStructureDef t1) where
+        posOf x = posOf (nodeInfo x)
+
+-- Functions start from here:
+
+instance Annotated CHMTemplateFunctionDef where
+        annotation (CHMTempFunDef _ _ _ n) = n
+        amap f (CHMTempFunDef a1 a2 a3 a4) = CHMTempFunDef a1 a2 a3 (f a4)
+
+instance Functor CHMTemplateFunctionDef where
+        fmap f (CHMTempFunDef a1 a2 a3 a4) = CHMTempFunDef a1 (map (fmap f) a2) (fmap f a3) (f a4)
+
+instance CNode t1 => CNode (CHMTemplateFunctionDef t1) where
+        nodeInfo (CHMTempFunDef _ _ _ n) = nodeInfo n
+
+instance CNode t1 => Pos (CHMTemplateFunctionDef t1) where
+        posOf x = posOf (nodeInfo x)
+
+-- Constraints start from here:
+
+instance Annotated CHMConstraint where
+        annotation (CHMConstr _ _ n) = n
+        amap f (CHMConstr a1 a2 a3) = CHMConstr a1 a2 (f a3)
+
+instance Functor CHMConstraint where
+        fmap f (CHMConstr a1 a2 a3) = CHMConstr a1 a2 (f a3)
+
+instance CNode t1 => CNode (CHMConstraint t1) where
+        nodeInfo (CHMConstr _ _ n) = nodeInfo n
+
+instance CNode t1 => Pos (CHMConstraint t1) where
+        posOf x = posOf (nodeInfo x)

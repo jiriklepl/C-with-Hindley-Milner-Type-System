@@ -295,9 +295,10 @@ external_declaration :: { CExtDecl }
 external_declaration
   : function_definition		                  { CFDefExt $1 }
   | chm_template_function_definition        { CHMFDefExt $1 }  -- CHM addition
-  | declaration			                  { CDeclExt $1 }
-  | "__extension__" external_declaration          { $2 }
-  | asm '(' string_literal ')' ';'		  {% withNodeInfo $1 $ CAsmExt $3 }
+  | chm_template_structure_definition       { CHMSDefExt $1 }  -- CHM addition
+  | declaration			                        { CDeclExt $1 }
+  | "__extension__" external_declaration    { $2 }
+  | asm '(' string_literal ')' ';'		      {% withNodeInfo $1 $ CAsmExt $3 }
 
 
 -- parse C function definition (C99 6.9.1)
@@ -2160,11 +2161,19 @@ attribute_params
 
 -- CHM goes here
 
+chm_template_structure_definition :: { CHMTempStructDef }
+chm_template_structure_definition
+  : chm_template_header chm_constraint_list struct_or_union_specifier ';'
+  {% leaveScope >> (withNodeInfo $3 $ CHMTempStructDef $1 (reverse $2) $3) }
+| chm_template_header struct_or_union_specifier ';'
+  {% leaveScope >> (withNodeInfo $2 $ CHMTempStructDef $1 [] $2) }
+
+
 chm_template_function_definition :: { CHMTempFunDef }
 chm_template_function_definition
-  : chm_template_header chm_constraint_list chm_function_definition
+  : chm_template_header chm_constraint_list function_definition
   {% leaveScope >> (withNodeInfo $3 $ CHMTempFunDef $1 (reverse $2) $3) }
-| chm_template_header chm_function_definition
+| chm_template_header function_definition
   {% leaveScope >> (withNodeInfo $2 $ CHMTempFunDef $1 [] $2) }
 
 chm_template_header :: { [Ident] } 
@@ -2183,27 +2192,11 @@ chm_constraint_list
 
 chm_constraint :: { CHMConstr }
 chm_constraint
-  : ident '<' chm_type_list '>' { CHMConstr $1 (reverse $3)  }
+  : ident '<' chm_type_list '>' {% withNodeInfo $1 $ CHMConstr $1 (reverse $3)  }
 
 chm_type_list :: { Reversed [[CDeclSpec]] }
   : type_specifier { singleton $1 }
   | chm_type_list ',' type_specifier { $1 `snoc` $3 }
-
-chm_function_definition :: { CFunDef }
-chm_function_definition
-  : chm_function_declarator compound_statement {% withNodeInfo $1 $ CFunDef [] $1 [] $2 }
-  | attrs chm_function_declarator compound_statement {% withNodeInfo $1 $ CFunDef (liftCAttrs $1) $2 [] $3  }
-  | declaration_specifier chm_function_declarator compound_statement {% withNodeInfo $1 $ CFunDef $1 $2 [] $3 }
-  | type_specifier chm_function_declarator compound_statement {% withNodeInfo $1 $ CFunDef $1 $2 [] $3 }
-  | declaration_qualifier_list chm_function_declarator compound_statement {% withNodeInfo $1 $ CFunDef (reverse $1) $2 [] $3 }
-  | type_qualifier_list chm_function_declarator compound_statement {% withNodeInfo $1 $ CFunDef (liftTypeQuals $1) $2 [] $3 }
-  | type_qualifier_list attrs chm_function_declarator compound_statement {% withNodeInfo $1 $ CFunDef (liftTypeQuals $1 ++ liftCAttrs $2) $3 [] $4 }
-
-chm_function_declarator :: { CDeclr }
-chm_function_declarator
-  : identifier_declarator
-    {% let declr = reverseDeclr $1 in
-      doFuncParamDeclIdent declr >> return declr }
 
 {
 

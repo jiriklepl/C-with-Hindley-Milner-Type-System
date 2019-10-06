@@ -557,6 +557,15 @@ binPrec CLorOp = 11
 chmBrackets :: Doc -> Doc
 chmBrackets expr = text "<" <> expr <> text ">"
 
+instance Pretty CHMTempStructDef where
+    pretty (CHMTempStructDef idents constraints struct _) =
+        text "template" <>
+        (chmBrackets . hsep . punctuate comma . map identP) idents <>
+        (if null constraints
+            then mempty
+            else space <> (hsep . punctuate comma . map pretty) constraints) $$
+        pretty struct
+
 instance Pretty CHMTempFunDef where
     pretty (CHMTempFunDef idents constraints func _) =
         text "template" <>
@@ -567,6 +576,6 @@ instance Pretty CHMTempFunDef where
         pretty func
 
 instance Pretty CHMConstr where
-    pretty (CHMConstr ident specss) =
+    pretty (CHMConstr ident specss _) =
         identP ident <>
         (chmBrackets . hsep . punctuate comma) [pretty x | specs <- specss, x <- specs]
