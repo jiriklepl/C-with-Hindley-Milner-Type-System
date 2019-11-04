@@ -1,0 +1,37 @@
+[
+	{
+		"path": "$ROOTPATH$/src/Language/C/Parser/Parser.y",
+		"bookmarks": [
+			{
+				"line": 2160,
+				"column": 9,
+				"label": "CHM Grammar"
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$/src/Language/C/Pretty.hs",
+		"bookmarks": [
+			{
+				"line": 554,
+				"column": 6,
+				"label": "CHM Pretty"
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$/src/Language/C/Syntax/AST.hs",
+		"bookmarks": [
+			{
+				"line": 813,
+				"column": 8,
+				"label": "CHM AST"
+			},
+			{
+				"line": 1506,
+				"column": 4,
+				"label": "CHM instances"
+			}
+		]
+	}
+]
