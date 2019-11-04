@@ -1506,7 +1506,6 @@ instance Annotated CStringLiteral where
 
 -- CHM goes here
 
-
 -- Structures start from here:
 
 instance Annotated CHMTemplateStructureDef where
