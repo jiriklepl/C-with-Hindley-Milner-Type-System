@@ -259,7 +259,6 @@ clangcversion   { CTokClangC _ (ClangCVersionTok $$) } -- Clang version literal
 "__write_only"	{ CTokClWrOnly	_ }             -- OpenCL write only qualifier
 "__global"	{ CTokClGlobal	_ }             -- OpenCL global variable
 "__local"	{ CTokClLocal	_ }             -- OpenCL local variable
-chm_template	{ CHMTemplate	_ }             -- CHM `template' token 
 
 %%
 
@@ -2178,7 +2177,7 @@ chm_template_function_definition
 
 chm_template_header :: { [Ident] } 
 chm_template_header
-  : chm_template '<' newtype_list '>' {% return (reverse $3) }
+  : '<' newtype_list '>' {% return (reverse $2) }
 
 newtype_list :: { Reversed [Ident] }
 newtype_list
