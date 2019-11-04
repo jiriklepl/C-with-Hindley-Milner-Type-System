@@ -559,7 +559,6 @@ chmBrackets expr = text "<" <> expr <> text ">"
 
 instance Pretty CHMTempStructDef where
     pretty (CHMTempStructDef idents constraints struct _) =
-        text "template" <>
         (chmBrackets . hsep . punctuate comma . map identP) idents <>
         (if null constraints
             then mempty
@@ -568,7 +567,6 @@ instance Pretty CHMTempStructDef where
 
 instance Pretty CHMTempFunDef where
     pretty (CHMTempFunDef idents constraints func _) =
-        text "template" <>
         (chmBrackets . hsep . punctuate comma . map identP) idents <>
         (if null constraints
             then mempty
