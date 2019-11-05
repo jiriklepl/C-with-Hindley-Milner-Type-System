@@ -250,7 +250,7 @@ instance Pretty CTypeSpec where
     pretty (CLongType _)        = text "long"
     pretty (CFloatType _)       = text "float"
     pretty (CFloatNType n x _)  = text "_Float" <> text (show n) <>
-                                  (if x then text "x" else empty) 
+                                  (if x then text "x" else empty)
     pretty (CDoubleType _)      = text "double"
     pretty (CSignedType _)      = text "signed"
     pretty (CUnsigType _)       = text "unsigned"
@@ -557,21 +557,23 @@ binPrec CLorOp = 11
 chmBrackets :: Doc -> Doc
 chmBrackets expr = text "<" <> expr <> text ">"
 
-instance Pretty CHMTempStructDef where
-    pretty (CHMTempStructDef idents constraints struct _) =
-        (chmBrackets . hsep . punctuate comma . map identP) idents <>
-        (if null constraints
-            then mempty
-            else space <> (hsep . punctuate comma . map pretty) constraints) $$
+instance Pretty CHMStructDef where
+    pretty (CHMStructDef header struct _) =
+        pretty header $$
         pretty struct
 
-instance Pretty CHMTempFunDef where
-    pretty (CHMTempFunDef idents constraints func _) =
-        (chmBrackets . hsep . punctuate comma . map identP) idents <>
+instance Pretty CHMFunDef where
+    pretty (CHMFunDef header func _) =
+        pretty header $$
+        pretty func
+
+instance Pretty CHMHead where
+    pretty (CHMHead idents constraints _) =
+        chmBrackets $
+        (hsep . punctuate comma . map identP) idents <>
         (if null constraints
             then mempty
-            else space <> (hsep . punctuate comma . map pretty) constraints) $$
-        pretty func
+            else space <> (hsep . punctuate comma . map pretty) constraints)
 
 instance Pretty CHMConstr where
     pretty (CHMConstr ident specss _) =

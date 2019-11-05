@@ -293,8 +293,8 @@ ext_decl_list
 external_declaration :: { CExtDecl }
 external_declaration
   : function_definition		                  { CFDefExt $1 }
-  | chm_template_function_definition        { CHMFDefExt $1 }  -- CHM addition
-  | chm_template_structure_definition       { CHMSDefExt $1 }  -- CHM addition
+  | chm_function_definition        { CHMFDefExt $1 }  -- CHM addition
+  | chm_structure_definition       { CHMSDefExt $1 }  -- CHM addition
   | declaration			                        { CDeclExt $1 }
   | "__extension__" external_declaration    { $2 }
   | asm '(' string_literal ')' ';'		      {% withNodeInfo $1 $ CAsmExt $3 }
@@ -2160,24 +2160,22 @@ attribute_params
 
 -- CHM goes here
 
-chm_template_structure_definition :: { CHMTempStructDef }
-chm_template_structure_definition
-  : chm_template_header chm_constraint_list struct_or_union_specifier ';'
-  {% leaveScope >> (withNodeInfo $3 $ CHMTempStructDef $1 (reverse $2) $3) }
-| chm_template_header struct_or_union_specifier ';'
-  {% leaveScope >> (withNodeInfo $2 $ CHMTempStructDef $1 [] $2) }
+chm_structure_definition :: { CHMStructDef }
+chm_structure_definition
+  : chm_header struct_or_union_specifier ';'
+    {% leaveScope >> (withNodeInfo $2 $ CHMStructDef $1 $2) }
 
 
-chm_template_function_definition :: { CHMTempFunDef }
-chm_template_function_definition
-  : chm_template_header chm_constraint_list function_definition
-  {% leaveScope >> (withNodeInfo $3 $ CHMTempFunDef $1 (reverse $2) $3) }
-| chm_template_header function_definition
-  {% leaveScope >> (withNodeInfo $2 $ CHMTempFunDef $1 [] $2) }
+chm_function_definition :: { CHMFunDef }
+chm_function_definition
+  : chm_header function_definition
+    {% leaveScope >> (withNodeInfo $2 $ CHMFunDef $1 $2) }
 
-chm_template_header :: { [Ident] } 
-chm_template_header
-  : '<' newtype_list '>' {% return (reverse $2) }
+chm_header :: { CHMHead }
+chm_header
+  : '<' newtype_list '>' {% withNodeInfo $2 $ CHMHead (reverse $2) [] }
+  | '<' newtype_list ':' chm_constraint_list '>' {% withNodeInfo $2 $ CHMHead (reverse $2) (reverse $4) }
+  | '<' ':' chm_constraint_list '>' {% withNodeInfo $3 $ CHMHead [] (reverse $3) }
 
 newtype_list :: { Reversed [Ident] }
 newtype_list
