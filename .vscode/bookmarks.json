@@ -23,12 +23,17 @@
 		"path": "$ROOTPATH$/src/Language/C/Syntax/AST.hs",
 		"bookmarks": [
 			{
-				"line": 813,
+				"line": 59,
+				"column": 0,
+				"label": "CHM Exports"
+			},
+			{
+				"line": 814,
 				"column": 8,
 				"label": "CHM AST"
 			},
 			{
-				"line": 1506,
+				"line": 1515,
 				"column": 4,
 				"label": "CHM instances"
 			}
