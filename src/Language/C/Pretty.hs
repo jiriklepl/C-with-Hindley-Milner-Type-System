@@ -72,7 +72,7 @@ ii = nest 4
 instance Pretty CTranslUnit where
     pretty (CTranslUnit edecls _) = vcat (map pretty edecls)
 
--- | Pretty print the given tranlation unit, but replace declarations from header files with @#include@ directives.
+-- | Pretty print the given translation unit, but replace declarations from header files with @#include@ directives.
 --
 -- The resulting file may not compile (because of missing @#define@ directives and similar things), but is very useful
 -- for testing, as otherwise the pretty printed file will be cluttered with declarations from system headers.
