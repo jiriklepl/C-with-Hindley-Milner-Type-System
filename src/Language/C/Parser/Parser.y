@@ -2175,7 +2175,7 @@ chm_header :: { CHMHead }
 chm_header
   : '<' newtype_list '>' {% withNodeInfo $2 $ CHMHead (reverse $2) [] }
   | '<' newtype_list ':' chm_constraint_list '>' {% withNodeInfo $2 $ CHMHead (reverse $2) (reverse $4) }
-  | '<' ':' chm_constraint_list '>' {% withNodeInfo $3 $ CHMHead [] (reverse $3) }
+  | '<' ':' chm_constraint_list '>' {% enterScope >> (withNodeInfo $3 $ CHMHead [] (reverse $3)) }
 
 newtype_list :: { Reversed [Ident] }
 newtype_list
