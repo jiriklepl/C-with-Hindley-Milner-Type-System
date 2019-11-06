@@ -573,7 +573,11 @@ instance Pretty CHMHead where
         (hsep . punctuate comma . map identP) idents <>
         (if null constraints
             then mempty
-            else space <> (hsep . punctuate comma . map pretty) constraints)
+            else space <>
+                 text ":" <>
+                 space <>
+                 (hsep . punctuate comma . map pretty) constraints <>
+                 space)
 
 instance Pretty CHMConstr where
     pretty (CHMConstr ident specss _) =
