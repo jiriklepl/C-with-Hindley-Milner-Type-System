@@ -553,7 +553,6 @@ binPrec CLndOp = 12
 binPrec CLorOp = 11
 
 -- CHM goes here
-
 chmBrackets :: Doc -> Doc
 chmBrackets expr = text "<" <> expr <> text ">"
 
