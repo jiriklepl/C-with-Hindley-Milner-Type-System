@@ -6,11 +6,6 @@
 				"line": 262,
 				"column": 8,
 				"label": "CHM Tokens"
-			},
-			{
-				"line": 2164,
-				"column": 9,
-				"label": "CHM Grammar"
 			}
 		]
 	},
@@ -28,7 +23,7 @@
 		"path": "$ROOTPATH$/src/Language/C/Syntax/AST.hs",
 		"bookmarks": [
 			{
-				"line": 59,
+				"line": 58,
 				"column": 0,
 				"label": "CHM Exports"
 			},
