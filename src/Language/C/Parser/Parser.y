@@ -260,6 +260,10 @@ clangcversion   { CTokClangC _ (ClangCVersionTok $$) } -- Clang version literal
 "__global"	{ CTokClGlobal	_ }             -- OpenCL global variable
 "__local"	{ CTokClLocal	_ }             -- OpenCL local variable
 
+-- CHM goes here
+"class"	{ CHMClass	_ }             -- OpenCL local variable
+"instance"	{ CHMInstance	_ }             -- OpenCL local variable
+
 %%
 
 
