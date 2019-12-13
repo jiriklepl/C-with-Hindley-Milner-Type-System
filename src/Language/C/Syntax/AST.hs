@@ -813,7 +813,6 @@ class (Functor ast) => Annotated ast where
 -- fmap2 f (a,b) = (f a, b)
 
 -- CHM goes here
-
 type CHMStructDef = CHMStructureDef NodeInfo
 data CHMStructureDef a
   = CHMStructDef
@@ -1516,7 +1515,6 @@ instance Annotated CStringLiteral where
 -- CHM goes here
 
 -- Structures start from here:
-
 instance Annotated CHMStructureDef where
         annotation (CHMStructDef _ _ n) = n
         amap f (CHMStructDef a1 a2 a3) = CHMStructDef (amap f a1) (amap f a2) (f a3)
@@ -1531,7 +1529,6 @@ instance CNode t1 => Pos (CHMStructureDef t1) where
         posOf x = posOf (nodeInfo x)
 
 -- Functions start from here:
-
 instance Annotated CHMFunctionDef where
         annotation (CHMFunDef _ _ n) = n
         amap f (CHMFunDef a1 a2 a3) = CHMFunDef (amap f a1) (amap f a2) (f a3)
@@ -1546,7 +1543,6 @@ instance CNode t1 => Pos (CHMFunctionDef t1) where
         posOf x = posOf (nodeInfo x)
 
 -- Header start from here:
-
 instance Annotated CHMHeader where
         annotation (CHMHead _ _ n) = n
         amap f (CHMHead a1 a2 a3) = CHMHead a1 (map (amap f) a2) (f a3)
@@ -1561,7 +1557,6 @@ instance CNode t1 => Pos (CHMHeader t1) where
         posOf x = posOf (nodeInfo x)
 
 -- Constraints start from here:
-
 instance Annotated CHMConstraint where
         annotation (CHMConstr _ _ n) = n
         amap f (CHMConstr a1 a2 a3) = CHMConstr a1 a2 (f a3)

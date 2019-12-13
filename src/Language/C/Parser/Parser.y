@@ -2163,7 +2163,6 @@ attribute_params
   | attribute_params ',' unary_expression assignment_operator clang_version_literal { $1 }
 
 -- CHM goes here
-
 chm_structure_definition :: { CHMStructDef }
 chm_structure_definition
   : chm_header struct_or_union_specifier ';'
