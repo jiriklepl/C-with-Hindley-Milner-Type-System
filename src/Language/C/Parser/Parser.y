@@ -2168,7 +2168,6 @@ chm_structure_definition
   : chm_header struct_or_union_specifier ';'
     {% leaveScope >> (withNodeInfo $2 $ CHMStructDef $1 $2) }
 
-
 chm_function_definition :: { CHMFunDef }
 chm_function_definition
   : chm_header function_definition
