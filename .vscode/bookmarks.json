@@ -3,7 +3,12 @@
 		"path": "$ROOTPATH$/src/Language/C/Parser/Parser.y",
 		"bookmarks": [
 			{
-				"line": 2160,
+				"line": 262,
+				"column": 8,
+				"label": "CHM Tokens"
+			},
+			{
+				"line": 2164,
 				"column": 9,
 				"label": "CHM Grammar"
 			}
@@ -33,9 +38,19 @@
 				"label": "CHM AST"
 			},
 			{
-				"line": 1515,
+				"line": 1514,
 				"column": 4,
 				"label": "CHM instances"
+			}
+		]
+	},
+	{
+		"path": "$ROOTPATH$/src/Language/C/Parser/Lexer.x",
+		"bookmarks": [
+			{
+				"line": 425,
+				"column": 16,
+				"label": "CHM Token  Lex"
 			}
 		]
 	}
